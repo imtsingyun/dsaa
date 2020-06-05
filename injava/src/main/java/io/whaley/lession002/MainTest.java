@@ -2,26 +2,26 @@ package io.whaley.lession002;
 
 public class MainTest {
     public static void main(String[] args) {
-        ArrayList list = new ArrayList();
-        list.add(0);
-        list.add(1);
-        list.add(2);
-        list.add(3);
-        list.add(4);
-        list.add(5);
+        ArrayList<String> list = new ArrayList<>();
+        list.add("abc");
 
-        System.out.println(list);
+        ArrayList<Integer> intList = new ArrayList<>();
+        intList.add(1222);
 
-        list.insert(1, 100);
-        list.insert(1, 101);
-        list.insert(1, 102);
-        list.insert(1, 103);
-        list.insert(1, 104);
-        System.out.println(list);
+        ArrayList<Student> studentArrayList = new ArrayList<>();
+        studentArrayList.add(new Student("Tom", 19));
 
-        int a = 100;
-        System.out.println(a >> 2);
+        System.out.println(studentArrayList);
 
+    }
 
+    static class Student {
+        private String name;
+        private Integer age;
+
+        public Student(String name, Integer age) {
+            this.name = name;
+            this.age = age;
+        }
     }
 }

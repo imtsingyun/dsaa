@@ -1,9 +1,9 @@
 package io.whaley.lession002;
 
-public class ArrayList {
+public class ArrayList<E> {
 
     private int size;
-    private int[] elements;
+    private Object[] elements;
 
     private static final int DEFAULT_CAPACITY = 16;
     private static final int ELEMENT_NOT_FOUND = -1;
@@ -11,7 +11,7 @@ public class ArrayList {
     public ArrayList(int capacity) {
         // 如果 capacity 小于默认值，则使用默认值
         capacity = Math.max(capacity, DEFAULT_CAPACITY);
-        elements = new int[capacity];
+        elements = new Object[capacity];
     }
 
     public ArrayList() {
@@ -30,31 +30,31 @@ public class ArrayList {
         return size == 0;
     }
 
-    public boolean contains(int element) {
+    public boolean contains(E element) {
         return indexOf(element) != ELEMENT_NOT_FOUND;
     }
 
-    public void add(int element) {
+    public void add(E element) {
         // 如果当前数组的使用量 超过容量的 75%，则开始进行扩容
         if (size > (elements.length * 0.75)) {
             // 扩容 25%
             int newCapacity = (int) (elements.length + (elements.length * 0.25));
-            int[] old = elements;
-            elements = new int[newCapacity];
+            Object[] old = elements;
+            elements = new Object[newCapacity];
             // 将原来的数据copy到新数组
             if (size >= 0) System.arraycopy(old, 0, elements, 0, size);
         }
         elements[size++] = element;
     }
 
-    public int get(int index) {
+    public E get(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("index = " + index + ", size = " + size);
         }
-        return elements[index];
+        return (E) elements[index];
     }
 
-    public int insert(int index, int element) {
+    public E insert(int index, E element) {
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException("index = " + index + ", size = " + size);
         }
@@ -63,29 +63,30 @@ public class ArrayList {
         if (size > (elements.length * 0.75)) {
             // 扩容 25%
             int newCapacity = (int) (elements.length + (elements.length >> 2));
-            int[] old = elements;
-            elements = new int[newCapacity];
+            Object[] old = elements;
+            elements = new Object[newCapacity];
             // 将原来的数据copy到新数组
             System.arraycopy(old, 0, elements, 0, size);
         }
+        Object old = elements[index];
         for (int i = size - 1; i >= index; i--) {
             elements[i + 1] = elements[i];
         }
         elements[index] = element;
-        return ++size;
+        return (E) old;
     }
 
-    public int remove(int index) {
+    public E remove(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("index = " + index + ", size = " + size);
         }
-        int old = elements[index];
+        Object old = elements[index];
         System.arraycopy(elements, index + 1, elements, index, size - index);
         size--;
-        return old;
+        return (E) old;
     }
 
-    public int indexOf(int element) {
+    public int indexOf(E element) {
         for (int i = 0; i < size; i++) {
             if (elements[i] == element) {
                 return i;
