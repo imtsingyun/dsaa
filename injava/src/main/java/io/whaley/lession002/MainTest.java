@@ -19,6 +19,9 @@ public class MainTest {
         list.insert(1, 104);
         System.out.println(list);
 
+        int a = 100;
+        System.out.println(a >> 2);
+
 
     }
 }

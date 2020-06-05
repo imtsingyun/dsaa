@@ -62,7 +62,7 @@ public class ArrayList {
         // 如果当前数组的使用量 超过容量的 75%，则开始进行扩容
         if (size > (elements.length * 0.75)) {
             // 扩容 25%
-            int newCapacity = (int) (elements.length + (elements.length * 0.25));
+            int newCapacity = (int) (elements.length + (elements.length >> 2));
             int[] old = elements;
             elements = new int[newCapacity];
             // 将原来的数据copy到新数组
