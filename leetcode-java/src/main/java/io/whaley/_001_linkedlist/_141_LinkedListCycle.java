@@ -8,16 +8,18 @@ public class _141_LinkedListCycle {
 class Solution141 {
     // 快慢指针
     public boolean hasCycle(ListNode head) {
-        ListNode fast = head;
+        if (head == null) {
+            return false;
+        }
         ListNode slow = head;
+        ListNode fast = head.next;
 
-        while (slow != null && fast.next != null) {
+        while (fast != null && fast.next != null) {
             if (slow.val == fast.val) {
                 return true;
             }
             slow = slow.next;
             fast = fast.next.next;
-
         }
         return false;
     }
