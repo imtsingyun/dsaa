@@ -1,8 +1,11 @@
 package io.whaley._001_linkedlist;
 
+/**
+ * https://leetcode.com/problems/linked-list-cycle/submissions/
+ * 141. Linked List Cycle
+ */
 public class _141_LinkedListCycle {
     Solution141 solution = new Solution141();
-
 }
 
 class Solution141 {
