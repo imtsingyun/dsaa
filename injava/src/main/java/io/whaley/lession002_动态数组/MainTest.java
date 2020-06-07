@@ -1,4 +1,4 @@
-package io.whaley.lession002;
+package io.whaley.lession002_动态数组;
 
 public class MainTest {
     public static void main(String[] args) {

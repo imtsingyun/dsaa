@@ -15,7 +15,7 @@ func init() {
 func main() {
 	flag.Parse()
 	startTime := time.Now().Unix()
-	result := fib1(n)
+	result := fib2(n)
 	end := time.Now().Unix()
 	fmt.Printf("time %d, %v\n", (end - startTime), result)
 }

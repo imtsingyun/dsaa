@@ -1,4 +1,4 @@
-package io.whaley.lession002;
+package io.whaley.lession002_动态数组;
 
 public class ArrayList<E> {
 
@@ -19,6 +19,9 @@ public class ArrayList<E> {
     }
 
     public void clear() {
+        for (int i=0; i<size; i++) {
+            elements[i] = null;
+        }
         size = 0;
     }
 
@@ -82,13 +85,13 @@ public class ArrayList<E> {
         }
         Object old = elements[index];
         System.arraycopy(elements, index + 1, elements, index, size - index);
-        size--;
+        elements[--size] = null;
         return (E) old;
     }
 
     public int indexOf(E element) {
         for (int i = 0; i < size; i++) {
-            if (elements[i] == element) {
+            if (element.equals(elements[i])) {
                 return i;
             }
         }
