@@ -10,6 +10,22 @@ package io.whaley._001_linkedlist;
  */
 public class _206_ReverseLinkedList {
 
+    /**
+     * 使用递规实现
+     * @param head
+     * @return
+     */
+    public LinkedList.ListNode reverseList1(LinkedList.ListNode head) {
+
+        if (head == null || head.next == null) {
+            return head;
+        }
+        LinkedList.ListNode newHead = reverseList1(head.next);
+        head.next.next = head;
+        head.next = null;
+        return newHead;
+    }
+
     public LinkedList.ListNode reverseList(LinkedList.ListNode head) {
         // 定义一个新的头节点
         LinkedList.ListNode newHead = null;
