@@ -33,7 +33,6 @@ public class _203_RemoveLinkedListElements {
 }
 
 class Solution203 {
-
     public ListNode removeElements1(ListNode head, int val) {
         // 构造一个临时头节点，用来记录 prev 结点
         ListNode tempHead = new ListNode(-1);
@@ -51,6 +50,7 @@ class Solution203 {
         }
         return tempHead.next;
     }
+
     public ListNode removeElements(ListNode head, int val) {
         ListNode p = head;
         while (p != null) {
