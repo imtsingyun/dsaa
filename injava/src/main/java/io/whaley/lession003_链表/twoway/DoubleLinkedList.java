@@ -25,37 +25,93 @@ public class DoubleLinkedList<E> extends AbstractList<E> {
 
         @Override
         public String toString() {
-            return "Node{" + "ele=" + ele + ", next=" + next + '}';
+            StringBuilder sb = new StringBuilder();
+            if (prev != null) {
+                sb.append(prev.ele);
+            }
+            sb.append("<-").append(ele).append("->");
+            if (next != null) {
+                sb.append(next.ele);
+            }
+            return sb.toString();
         }
     }
 
     @Override
     public void clear() {
-
+        size = 0;
+        first = null;
+        last = null;
     }
 
     @Override
     public E get(int index) {
-        return null;
+        return node(index).ele;
     }
 
     @Override
     public void add(E ele) {
-
+        insert(size, ele);
     }
 
     @Override
     public E set(int index, E ele) {
-        return null;
+        Node<E> node = node(index);
+        E old = node.ele;
+        node.ele = ele;
+        return old;
     }
 
     @Override
     public void insert(int index, E ele) {
+        rangeCheckForAdd(index);
+        // 添加到最后一个节点
+        if (index == size) {
+            Node<E> prev = last;
+            last = new Node<>(prev, ele, null);
+            if (prev == null) {
+                first = last;
+            } else {
+                prev.next = last;
+            }
+        } else {
+            Node<E> next = node(index);
+            Node<E> prev = next.prev;
+            Node<E> newNode = new Node<>(prev, ele, next);
+            next.prev = newNode;
 
+            if (prev == null) {
+                first = newNode;
+            } else {
+                prev.next = newNode;
+            }
+        }
+        size++;
     }
 
     @Override
     public E remove(int index) {
+        rangeCheck(index);
+        Node<E> node = node(index);
+        Node<E> prev = node.prev;
+        Node<E> next = node.next;
+
+        if (prev == null && next == null) {
+            first = null;
+            last = null;
+        } else {
+            if (prev == null) {
+                first = next;
+            } else {
+                prev.next = next;
+            }
+
+            if (next == null) {
+                last = prev;
+            } else {
+                next.prev = prev;
+            }
+        }
         return null;
     }
 
@@ -77,7 +133,7 @@ public class DoubleLinkedList<E> extends AbstractList<E> {
         if (index > (size >> 1)) {
             node = last;
             for (int i = size; i > index; i--) {
-                node = node.next;
+                node = node.prev;
             }
         } else {
             node = first;
@@ -86,5 +142,21 @@ public class DoubleLinkedList<E> extends AbstractList<E> {
             }
         }
         return node;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder string = new StringBuilder();
+        string.append("size=").append(size).append(",[");
+        Node<E> node = first;
+        while (node != null) {
+            string.append(node);
+            if (node.next != null) {
+                string.append(", ");
+            }
+            node = node.next;
+        }
+        string.append("]");
+        return string.toString();
     }
 }
