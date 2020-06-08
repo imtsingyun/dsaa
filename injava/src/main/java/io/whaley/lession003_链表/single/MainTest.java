@@ -1,4 +1,4 @@
-package io.whaley.lession003_链表;
+package io.whaley.lession003_链表.single;
 
 import io.whaley.util.List;
 

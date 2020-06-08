@@ -1,18 +1,11 @@
-package io.whaley.lession003_链表;
+package io.whaley.lession003_链表.single;
 
 import io.whaley.util.AbstractList;
 
-/**
- * 带有虚拟头结点的链表
- * @param <E>
- */
-public class LinkedListWithFakeHead<E> extends AbstractList<E> {
+public class LinkedList<E> extends AbstractList<E> {
 
     private Node<E> first;
 
-    public LinkedListWithFakeHead() {
-        first = new Node<>(null, null);
-    }
     private static class Node<E> {
         E ele;
         Node<E> next;
@@ -65,9 +58,12 @@ public class LinkedListWithFakeHead<E> extends AbstractList<E> {
     }
 
     public void insert(int index, E ele) {
-        rangeCheckForAdd(index);
-        Node<E> preNode = index == 0 ? first : node(index - 1);
-        preNode.next = new Node<>(ele, preNode.next);
+        if (index == 0) {
+            first = new Node<>(ele, first);
+        } else {
+            Node<E> preNode = node(index - 1);
+            preNode.next = new Node<>(ele, preNode.next);
+        }
         size++;
     }
 
@@ -79,7 +75,7 @@ public class LinkedListWithFakeHead<E> extends AbstractList<E> {
      */
     private Node<E> node(int index) {
         rangeCheck(index);
-        Node<E> target = first.next;
+        Node<E> target = first;
         for (int i = 0; i < index; i++) {
             target = target.next;
         }
@@ -89,16 +85,21 @@ public class LinkedListWithFakeHead<E> extends AbstractList<E> {
     @Override
     public E remove(int index) {
         rangeCheck(index);
-        Node<E> preNode = index == 0 ? first : node(index - 1);
-        Node<E> old = preNode.next;
-        preNode.next = old.next;
+        Node<E> old = first;
+        if (index == 0) {
+            first = first.next;
+        } else {
+            Node<E> preNode = node(index);
+            old = preNode.next;
+            preNode.next = old.next;
+        }
         size--;
         return old.ele;
     }
 
     @Override
     public int indexOf(E ele) {
-        Node<E> node = first.next;
+        Node<E> node = first;
         if (ele == null) {
             for (int i = 0; i < size; i++) {
                 if (node == null) return -1;
@@ -117,17 +118,6 @@ public class LinkedListWithFakeHead<E> extends AbstractList<E> {
 
     @Override
     public String toString() {
-        StringBuilder string = new StringBuilder();
-        string.append("size=").append(size).append(",[");
-        Node<E> node = first.next;
-        while (node != null) {
-            string.append(node.ele);
-            if (node.next != null) {
-                string.append(", ");
-            }
-            node = node.next;
-        }
-        string.append("]");
-        return string.toString();
+        return "LinkedList{" + "first=" + first + ", size=" + size + '}';
     }
 }
