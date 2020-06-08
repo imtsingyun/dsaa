@@ -28,10 +28,14 @@ public class DoubleLinkedList<E> extends AbstractList<E> {
             StringBuilder sb = new StringBuilder();
             if (prev != null) {
                 sb.append(prev.ele);
+            } else {
+                sb.append("null");
             }
             sb.append("<-").append(ele).append("->");
             if (next != null) {
                 sb.append(next.ele);
+            } else {
+                sb.append("null");
             }
             return sb.toString();
         }
