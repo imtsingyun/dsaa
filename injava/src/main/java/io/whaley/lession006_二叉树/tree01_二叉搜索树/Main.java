@@ -6,8 +6,7 @@ public class  Main {
 
 
     public static void main(String[] args) {
-
-        BinarySearchTree<Integer> tree = new BinarySearchTree<>();
+        BinarySearchTree<Integer> tree = new BinarySearchTree<Integer>();
         tree.add(7);
         tree.add(4);
         tree.add(9);
@@ -22,7 +21,9 @@ public class  Main {
 //        tree.preorderTraversal();
         System.out.println("--------------------------------");
 //        tree.inorderTraversal();
-        tree.postorderTraversal();
+//        tree.postorderTraversal();
+        tree.levelOrderTraversal();
+
         BinarySearchTree<Person> personTree = new BinarySearchTree<>(Comparator.comparingInt(Person::getAge));
         personTree.add(new Person("C", 20));
         personTree.add(new Person("A", 15));
@@ -33,7 +34,7 @@ public class  Main {
         personTree.add(new Person("D", 55));
 //        personTree.preorderTraversal();
 
-        BinarySearchTree<Car> carTree = new BinarySearchTree<>();
+        BinarySearchTree<Car> carTree = new BinarySearchTree<Car>();
         carTree.add(new Car("A", 100.02));
         carTree.add(new Car("B", 101.02));
     }

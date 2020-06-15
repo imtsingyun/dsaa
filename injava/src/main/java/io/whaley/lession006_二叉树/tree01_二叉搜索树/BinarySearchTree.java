@@ -1,10 +1,8 @@
 package io.whaley.lession006_二叉树.tree01_二叉搜索树;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * 二叉搜索树
@@ -64,7 +62,7 @@ public class BinarySearchTree<E> {
                 return;
             }
         }
-        Node<E> newNode = new Node<>(ele, parent);
+        Node<E> newNode = new Node<E>(ele, parent);
         if (compare > 0) {
             parent.right = newNode;
         } else {
@@ -102,17 +100,6 @@ public class BinarySearchTree<E> {
         }
     }
 
-    private static class Node<E> {
-        E ele;
-        Node<E> left;
-        Node<E> right;
-        Node<E> parent;
-
-        public Node(E ele, Node<E> parent) {
-            this.ele = ele;
-            this.parent = parent;
-        }
-    }
 
     public void preorderTraversal() {
         preorderTraversal(root);
@@ -174,6 +161,34 @@ public class BinarySearchTree<E> {
      * @param root 根节点
      */
     private void levelOrderTraversal(Node<E> root) {
-        Queue<Node> queue = new LinkedBlockingQueue<>();
+        if (root == null) {
+            return;
+        }
+        Queue<Node<E>> queue = new LinkedList<>();
+        queue.offer(root);
+
+        while (!queue.isEmpty()) {
+            Node<E> node = queue.poll();
+            System.out.println(node.ele);
+            if (node.left != null) {
+                queue.offer(node.left);
+            }
+
+            if (node.right != null) {
+                queue.offer(node.right);
+            }
+        }
+    }
+
+    private static class Node<E> {
+        E ele;
+        Node<E> left;
+        Node<E> right;
+        Node<E> parent;
+
+        public Node(E ele, Node<E> parent) {
+            this.ele = ele;
+            this.parent = parent;
+        }
     }
 }
