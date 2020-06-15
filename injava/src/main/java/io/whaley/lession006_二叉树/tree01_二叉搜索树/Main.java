@@ -22,7 +22,13 @@ public class  Main {
         System.out.println("--------------------------------");
 //        tree.inorderTraversal();
 //        tree.postorderTraversal();
-        tree.levelOrderTraversal();
+//        tree.levelOrderTraversal();
+        tree.levelOrderTraversal(new BinarySearchTree.Visitor<Integer>() {
+            @Override
+            public void visit(Integer ele) {
+                System.out.print("_" + ele + "_");
+            }
+        });
 
         BinarySearchTree<Person> personTree = new BinarySearchTree<>(Comparator.comparingInt(Person::getAge));
         personTree.add(new Person("C", 20));

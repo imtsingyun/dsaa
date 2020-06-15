@@ -180,6 +180,27 @@ public class BinarySearchTree<E> {
         }
     }
 
+    public void levelOrderTraversal(Visitor<E> visitor) {
+        if (root == null || visitor == null) {
+            return;
+        }
+        Queue<Node<E>> queue = new LinkedList<>();
+        queue.offer(root);
+
+        while (!queue.isEmpty()) {
+            Node<E> node = queue.poll();
+            visitor.visit(node.ele);
+            if (node.left != null) {
+                queue.offer(node.left);
+            }
+
+            if (node.right != null) {
+                queue.offer(node.right);
+            }
+        }
+    }
+
+
     private static class Node<E> {
         E ele;
         Node<E> left;
@@ -191,4 +212,9 @@ public class BinarySearchTree<E> {
             this.parent = parent;
         }
     }
+
+    public static interface Visitor<E> {
+        void visit(E ele);
+    }
+
 }
