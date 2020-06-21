@@ -178,6 +178,34 @@ public class BinarySearchTree<E> {
         }
     }
 
+    /**
+     * 获取一个节点的前驱节点
+     * @return 前驱节点: 中序遍历时的前一个节点
+     */
+    public Node<E> predecessor(Node<E> root) {
+        if (root == null) return null;
+
+        // 中序遍历，使用迭代
+        Queue<Node<E>> queue = new LinkedList<>();
+        queue.offer(root);
+        // 前一个节点
+        Node<E> preNode;
+
+        while (!queue.isEmpty()) {
+            Node<E> node = queue.poll();
+            if (node.left != null)
+                queue.offer(node.left);
+            queue.offer(node);
+            if (node.right != null)
+                queue.offer(node.right);
+            
+        }
+
+
+
+        return null;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
