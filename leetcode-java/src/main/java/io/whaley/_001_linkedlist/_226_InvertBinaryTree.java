@@ -25,8 +25,9 @@ package io.whaley._001_linkedlist;
  */
 public class _226_InvertBinaryTree {
     public static void main(String[] args) {
-        Solution solution = new Solution();
-
+//        Solution solution = new Solution();
+        String str = "\t7\n/\n4";
+        System.out.println(str);
 //        solution.invertTree();
     }
 }

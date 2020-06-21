@@ -1,8 +1,6 @@
 package io.whaley.lession006_二叉树.tree01_二叉搜索树;
 
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * 二叉搜索树
@@ -180,6 +178,51 @@ public class BinarySearchTree<E> {
         }
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        toString(root, sb, "");
+        return sb.toString();
+    }
+
+    private void toString(Node<E> node, StringBuilder sb, String prefix) {
+        if (node == null) {
+            return;
+        }
+
+        toString(node.right, sb, prefix + "  / ");
+        sb.append(prefix).append(node.ele).append("\n");
+        toString(node.left, sb, prefix + "  \\ ");
+    }
+
+    public void printTree() {
+        if (root == null) {
+            return;
+        }
+        int sizeOfLine = 1;
+        Queue<Node<E>> queue = new LinkedList<>();
+        queue.offer(root);
+        List<E> list = new ArrayList<>();
+        while (!queue.isEmpty()) {
+            Node<E> poll = queue.poll();
+            sizeOfLine --;
+            list.add(poll.ele);
+
+            if (poll.left != null) {
+                queue.offer(poll.left);
+            }
+            if (poll.right != null) {
+                queue.offer(poll.right);
+            }
+            if (sizeOfLine == 0) {
+                sizeOfLine = queue.size();
+                System.out.print(list);
+                System.out.println();
+                list = new ArrayList<>();
+            }
+        }
+    }
+
     public void levelOrderTraversal(Visitor<E> visitor) {
         if (root == null || visitor == null) {
             return;
@@ -199,7 +242,6 @@ public class BinarySearchTree<E> {
             }
         }
     }
-
 
     private static class Node<E> {
         E ele;

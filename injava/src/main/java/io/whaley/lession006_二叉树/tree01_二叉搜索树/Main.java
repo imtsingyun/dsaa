@@ -18,17 +18,14 @@ public class  Main {
         tree.add(3);
         tree.add(10);
         tree.add(12);
+        tree.add(6);
 //        tree.preorderTraversal();
         System.out.println("--------------------------------");
 //        tree.inorderTraversal();
 //        tree.postorderTraversal();
-//        tree.levelOrderTraversal();
-        tree.levelOrderTraversal(new BinarySearchTree.Visitor<Integer>() {
-            @Override
-            public void visit(Integer ele) {
-                System.out.print("_" + ele + "_");
-            }
-        });
+//        tree.printTree();
+//        tree.levelOrderTraversal(ele -> System.out.print("_" + ele + "_"));
+        System.out.println(tree.toString());
 
         BinarySearchTree<Person> personTree = new BinarySearchTree<>(Comparator.comparingInt(Person::getAge));
         personTree.add(new Person("C", 20));
