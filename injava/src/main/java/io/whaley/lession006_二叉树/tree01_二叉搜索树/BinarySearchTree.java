@@ -178,32 +178,32 @@ public class BinarySearchTree<E> {
         }
     }
 
+    public Node<E> getProdecessor() {
+        return predecessor(root);
+    }
     /**
      * 获取一个节点的前驱节点
      * @return 前驱节点: 中序遍历时的前一个节点
      */
-    public Node<E> predecessor(Node<E> root) {
+    private Node<E> predecessor(Node<E> root) {
         if (root == null) return null;
-
-        // 中序遍历，使用迭代
-        Queue<Node<E>> queue = new LinkedList<>();
-        queue.offer(root);
-        // 前一个节点
-        Node<E> preNode;
-
-        while (!queue.isEmpty()) {
-            Node<E> node = queue.poll();
-            if (node.left != null)
-                queue.offer(node.left);
-            queue.offer(node);
-            if (node.right != null)
-                queue.offer(node.right);
-            
+        // 获取左子点
+        Node<E> left = root.left;
+        if (left == null) {
+            return null;
         }
-
-
-
-        return null;
+        Node<E> right = left.right;
+        if (right == null) {
+            return null;
+        }
+        Node<E> last = null;
+        while (right != null) {
+            if (right.right == null) {
+                last = right;
+            }
+            right = right.right;
+        }
+        return last;
     }
 
     @Override
@@ -264,14 +264,13 @@ public class BinarySearchTree<E> {
             if (node.left != null) {
                 queue.offer(node.left);
             }
-
             if (node.right != null) {
                 queue.offer(node.right);
             }
         }
     }
 
-    private static class Node<E> {
+    public static class Node<E> {
         E ele;
         Node<E> left;
         Node<E> right;

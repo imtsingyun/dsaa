@@ -26,6 +26,8 @@ public class  Main {
 //        tree.printTree();
 //        tree.levelOrderTraversal(ele -> System.out.print("_" + ele + "_"));
         System.out.println(tree.toString());
+        BinarySearchTree.Node<Integer> prodecessor = tree.getProdecessor();
+        System.out.println(prodecessor.ele);
 
         BinarySearchTree<Person> personTree = new BinarySearchTree<>(Comparator.comparingInt(Person::getAge));
         personTree.add(new Person("C", 20));
