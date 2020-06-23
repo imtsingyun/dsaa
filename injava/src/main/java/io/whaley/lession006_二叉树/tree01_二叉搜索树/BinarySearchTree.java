@@ -185,25 +185,17 @@ public class BinarySearchTree<E> {
      * 获取一个节点的前驱节点
      * @return 前驱节点: 中序遍历时的前一个节点
      */
-    private Node<E> predecessor(Node<E> root) {
-        if (root == null) return null;
+    private Node<E> predecessor(Node<E> node) {
+        if (node == null) return null;
         // 获取左子点
-        Node<E> left = root.left;
-        if (left == null) {
-            return null;
-        }
-        Node<E> right = left.right;
-        if (right == null) {
-            return null;
-        }
-        Node<E> last = null;
-        while (right != null) {
-            if (right.right == null) {
-                last = right;
+        if (node.left != null) {
+            Node<E> p = node.left;
+            while (p.right != null) {
+                p = p.right;
             }
-            right = right.right;
+            return p;
         }
-        return last;
+        return null;
     }
 
     @Override
