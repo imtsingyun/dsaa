@@ -1,4 +1,4 @@
-package io.whaley.util;
+package io.whaley.lession006_二叉树.tree01_二叉搜索树;
 
 public class Test {
 
@@ -19,10 +19,14 @@ public class Test {
         bst.add(2);
         bst.add(12);
         bst.add(15);
-        System.out.println(bst.toString());
-//        System.out.println(bst.predecessor(20));
-//        System.out.println(bst.successor(10));
-        bst.remove(8);
-        System.out.println(bst.toString());
+
+        BST<Car> carBST = new BST<>();
+        carBST.add(new Car("BMW", 122));
+        carBST.add(new Car("DZ", 123));
+        carBST.add(new Car("JL", 98));
+        carBST.add(new Car("BC", 144));
+        carBST.add(new Car("HQ", 88));
+
+        System.out.println(carBST);
     }
 }

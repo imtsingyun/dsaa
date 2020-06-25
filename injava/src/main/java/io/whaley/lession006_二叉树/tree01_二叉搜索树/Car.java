@@ -4,9 +4,9 @@ public class Car implements Comparable<Car> {
 
     private String brand;
 
-    private Double money;
+    private int money;
 
-    public Car(String brand, Double money) {
+    public Car(String brand, int money) {
         this.brand = brand;
         this.money = money;
     }
@@ -19,16 +19,21 @@ public class Car implements Comparable<Car> {
         this.brand = brand;
     }
 
-    public Double getMoney() {
+    public int getMoney() {
         return money;
     }
 
-    public void setMoney(Double money) {
+    public void setMoney(int money) {
         this.money = money;
     }
 
     @Override
     public int compareTo(Car o) {
-        return 0;
+        return this.money - o.money;
+    }
+
+    @Override
+    public String toString() {
+        return brand + ':' + money;
     }
 }

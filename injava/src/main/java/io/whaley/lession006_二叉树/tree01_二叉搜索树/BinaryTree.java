@@ -1,4 +1,4 @@
-package io.whaley.util;
+package io.whaley.lession006_二叉树.tree01_二叉搜索树;
 
 import java.util.Comparator;
 
@@ -42,10 +42,6 @@ public class BinaryTree<E> {
      * @param <E>
      */
     ////////////////////////// 遍历 ////////////////////////// End
-    // 前驱
-
-    // 后继
-
     protected static class Node<E> {
         E element;
         Node<E> left;
