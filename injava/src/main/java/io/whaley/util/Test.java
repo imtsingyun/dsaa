@@ -20,5 +20,9 @@ public class Test {
         bst.add(12);
         bst.add(15);
         System.out.println(bst.toString());
+//        System.out.println(bst.predecessor(20));
+//        System.out.println(bst.successor(10));
+        bst.remove(8);
+        System.out.println(bst.toString());
     }
 }
