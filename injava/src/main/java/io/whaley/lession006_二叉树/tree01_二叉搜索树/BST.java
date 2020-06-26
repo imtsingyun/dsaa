@@ -99,7 +99,6 @@ public class BST<E> extends BinaryTree<E> {
             } else {
                 node.parent.right = replacement;
             }
-            node.element = replacement.element;
         } else if (node.parent == null) {
             root = null;
         } else {
@@ -142,8 +141,7 @@ public class BST<E> extends BinaryTree<E> {
      * @return 后继节点
      */
     public E successor(E element) {
-        Node<E> node = node(element);
-        Node<E> successor = successor(node);
+        Node<E> successor = successor(node(element));
         if (successor != null) {
             return successor.element;
         }
