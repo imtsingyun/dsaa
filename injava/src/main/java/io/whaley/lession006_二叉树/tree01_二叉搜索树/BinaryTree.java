@@ -25,6 +25,10 @@ public class BinaryTree<E> {
         root = null;
         size = 0;
     }
+
+    protected Node<E> createNode(E element, Node<E> parent) {
+        return new Node<E>(element, parent);
+    }
     ////////////////////////// 遍历 ////////////////////////// Begin
     /**
      * 1. 前序
@@ -43,10 +47,10 @@ public class BinaryTree<E> {
      */
     ////////////////////////// 遍历 ////////////////////////// End
     protected static class Node<E> {
-        E element;
-        Node<E> left;
-        Node<E> right;
-        Node<E> parent;
+        public E element;
+        public Node<E> left;
+        public Node<E> right;
+        public Node<E> parent;
 
         public Node(E element, Node<E> parent) {
             this.element = element;
@@ -59,6 +63,14 @@ public class BinaryTree<E> {
 
         public boolean hasTwoChildren() {
             return left != null && right != null;
+        }
+
+        public boolean isLeftChild() {
+            return parent != null && this == parent.left;
+        }
+
+        public boolean isRightChild() {
+            return parent != null && this == parent.right;
         }
 
         @Override

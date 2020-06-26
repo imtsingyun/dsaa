@@ -1,7 +1,5 @@
 package io.whaley.lession006_二叉树.tree01_二叉搜索树;
 
-import io.whaley.lession006_二叉树.tree01_二叉搜索树.BinaryTree;
-
 import java.util.Comparator;
 
 /**
@@ -16,10 +14,11 @@ public class BST<E> extends BinaryTree<E> {
         this.comparator = comparator;
     }
 
-    void add(E e) {
+    public void add(E e) {
         if (root == null) {
-            root = new Node<>(e, null);
+            root = createNode(e, null);
             size++;
+            afterAdd(root);
             return;
         }
         // 指针：用于遍历
@@ -38,14 +37,17 @@ public class BST<E> extends BinaryTree<E> {
                 node = node.left;
             }
         }
-        Node<E> targetNode = new Node<>(e, parent);
+        Node<E> targetNode = createNode(e, parent);
         if (compare > 0) {
             parent.right = targetNode;
         } else {
             parent.left = targetNode;
         }
         size++;
+        afterAdd(targetNode);
     }
+
+    protected void afterAdd(Node<E> node) {}
 
     private int compare(E e1, E e2) {
         if (comparator != null) {

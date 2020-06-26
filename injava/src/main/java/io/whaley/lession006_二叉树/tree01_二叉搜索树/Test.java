@@ -20,13 +20,15 @@ public class Test {
         bst.add(12);
         bst.add(15);
 
-        BST<Car> carBST = new BST<>();
-        carBST.add(new Car("BMW", 122));
-        carBST.add(new Car("DZ", 123));
-        carBST.add(new Car("JL", 98));
-        carBST.add(new Car("BC", 144));
-        carBST.add(new Car("HQ", 88));
+        System.out.println(bst);
 
-        System.out.println(carBST);
+//        BST<Car> carBST = new BST<>();
+//        carBST.add(new Car("BMW", 122));
+//        carBST.add(new Car("DZ", 123));
+//        carBST.add(new Car("JL", 98));
+//        carBST.add(new Car("BC", 144));
+//        carBST.add(new Car("HQ", 88));
+//
+//        System.out.println(carBST);
     }
 }
