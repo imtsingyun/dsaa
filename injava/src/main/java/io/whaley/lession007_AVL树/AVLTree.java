@@ -85,8 +85,8 @@ public class AVLTree<E> extends BST<E> {
         p.left = g;
         g.parent = p;
 
-        updateHeight(p);
         updateHeight(g);
+        updateHeight(p);
     }
 
     /**

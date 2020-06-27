@@ -1,7 +1,5 @@
 package io.whaley.lession007_AVL树;
 
-import io.whaley.lession006_二叉树.tree01_二叉搜索树.BinaryTree;
-
 import java.util.Comparator;
 
 public class AVLTree2<E> {
@@ -14,10 +12,29 @@ public class AVLTree2<E> {
         tree2.add(9);
         tree2.add(12);
         tree2.add(5);
+        tree2.add(6);
+        tree2.add(7);
+        tree2.add(4);
+        tree2.add(3);
+        tree2.add(8);
+        tree2.add(11);
+        tree2.add(18);
+        tree2.add(20);
+        tree2.add(39);
+        tree2.add(28);
+        tree2.add(58);
+        tree2.add(68);
+        tree2.add(78);
+        tree2.add(88);
+        tree2.add(98);
 
+        tree2.remove(98);
+        tree2.remove(88);
+        tree2.remove(78);
+        tree2.remove(68);
+        tree2.remove(58);
         System.out.println(tree2);
     }
-
     // 比较器
     protected Comparator<E> comparator;
 
@@ -36,11 +53,60 @@ public class AVLTree2<E> {
         Node<E> left;
         Node<E> right;
         Node<E> parent;
-        int height;
+        int height = 1;
 
         public Node(E element, Node<E> parent) {
             this.element = element;
             this.parent = parent;
+        }
+
+        /**
+         * 获取平衡因子: 左右节点高度差
+         * @return int
+         */
+        public int balanceFactor() {
+            int leftHeight = this.left == null ? 0 : this.left.height;
+            int rightHeight = this.right == null ? 0 : this.right.height;
+            return leftHeight - rightHeight;
+        }
+
+        /**
+         * 更新節點的高度
+         */
+        public void updateHeight() {
+            // 獲取左右子樹的高度
+            int leftHeight = this.left == null ? 0 : this.left.height;
+            int rightHeight = this.right == null ? 0 : this.right.height;
+            // 當前節點的高度是其最高子树的高度 + 1
+            height = 1 + Math.max(leftHeight, rightHeight);
+        }
+
+        /**
+         * 获取高度较大的子树
+         * @return 子树
+         */
+        public Node<E> tallerChild() {
+            // 獲取左右子樹的高度
+            int leftHeight = this.left == null ? 0 : this.left.height;
+            int rightHeight = this.right == null ? 0 : this.right.height;
+            if (leftHeight > rightHeight) {
+                return left;
+            } else if (leftHeight < rightHeight) {
+                return right;
+            }
+            return isLeftChild() ? left : right;
+        }
+
+        /**
+         * 判断是否为左子节点
+         * @return boolean
+         */
+        public boolean isLeftChild() {
+            return parent != null && this == parent.left;
+        }
+
+        public boolean isRightChild() {
+            return parent != null && this == parent.right;
         }
 
         /**
@@ -78,6 +144,7 @@ public class AVLTree2<E> {
     public void add(E element) {
         if (root == null) {
             root = createNode(element, null);
+            afterAdd(root);
             size++;
             return;
         }
@@ -99,7 +166,139 @@ public class AVLTree2<E> {
         } else {
             target.left = newNode;
         }
+        afterAdd(newNode);
         size++;
+    }
+
+    /**
+     * 添加元素后处理平衡问题
+     * @param node 添加的元素
+     */
+    private void afterAdd(Node<E> node) {
+        Node<E> parent = node.parent;
+        while (parent != null) {
+            if (isBalance(parent)) {
+                // 更新高度
+                updateHeight(parent);
+            } else {
+                // 不平衡: 找到的第一个不平衡的节点
+                reBalance(parent);
+                break;
+            }
+            parent = parent.parent;
+        }
+    }
+
+    /**
+     * 修复平衡
+     * grand 祖父节点（失衡节点）
+     * parent 父节点
+     * child 子节点
+     */
+    private void reBalance(Node<E> grand) {
+        // 通过判断子树的高度差，来确定引起失衡的方向
+        Node<E> parent = grand.tallerChild();
+        // 引起失衡的子树
+        Node<E> child = parent.tallerChild();
+
+        if (parent.isLeftChild()) {     // L
+            if (!child.isLeftChild()) { // LR
+                rotateLeft(parent);
+            }
+            rotateRight(grand);         // LR
+        } else {                        // R
+            if (child.isLeftChild()) {  // RL
+                rotateRight(parent);
+            }
+            rotateLeft(grand);          // RR
+        }
+    }
+
+    /**
+     * 右旋 ->
+     * 涉及的三个角色：祖父节点、父节点、子节点
+     * @param grand 祖父节点
+     */
+    private void rotateRight(Node<E> grand) {
+        // 父节点：祖父节点的 左子节点
+        Node<E> parent = grand.left;
+        // 子节点：方该节点在旋转后会被调到 grand 的左子节点
+        Node<E> child = parent.right;
+        // 1. parent 取代 grand 的位置
+        if (grand.isLeftChild()) {
+            grand.parent.left = parent;
+        } else if (grand.isRightChild()) {
+            grand.parent.right = parent;
+        } else {
+            root = parent;
+        }
+        parent.parent = grand.parent;
+        // 2. grand 成为 parent 的右子节点
+        parent.right = grand;
+        grand.parent = parent;
+        // 3. child 成为 grand 的左子节点
+        grand.left = child;
+        if (child != null) {
+            child.parent = grand;
+        }
+        updateHeight(grand);
+        updateHeight(parent);
+    }
+
+    private void rotateLeft(Node<E> grand) {
+        Node<E> parent = grand.right;
+        Node<E> child = parent.left;
+        //********************************************
+        if (grand.isRightChild()) {
+            grand.parent.right = parent;
+        } else if (grand.isLeftChild()) {
+            grand.parent.left = parent;
+        } else {
+            root = parent;
+        }
+        parent.parent = grand.parent;
+        //********************************************
+        parent.left = grand;
+        grand.parent = parent;
+        //********************************************
+        grand.right = child;
+        if (child != null) {
+            child.parent = grand;
+        }
+        updateHeight(grand);
+        updateHeight(parent);
+    }
+
+    /**
+     * 删除节点后
+     * @param node 被删除节点的父节点
+     */
+    private void afterRemove(Node<E> node) {
+        Node<E> parent = node.parent;
+        while (parent != null) {
+            if (isBalance(parent)) {
+                // 更新高度
+                updateHeight(parent);
+            } else {
+                // 不平衡
+                reBalance(parent);
+            }
+            parent = parent.parent;
+        }
+    }
+    // 更新高度
+    private void updateHeight(Node<E> node) {
+        node.updateHeight();
+    }
+
+    /**
+     * 
+     * 判断树是否失衡
+     * @param node 节点
+     * @return boolean
+     */
+    private boolean isBalance(Node<E> node) {
+        return Math.abs(node.balanceFactor()) <= 1;
     }
 
     private int compare(E e1, E e2) {
@@ -170,6 +369,9 @@ public class AVLTree2<E> {
         return null;
     }
 
+    public void remove(E element) {
+        remove(node(element));
+    }
     /**
      * 删除节点
      * @param node
@@ -199,11 +401,13 @@ public class AVLTree2<E> {
             } else {
                 parent.right = replacement;
             }
+            afterRemove(node);
             replacement.parent = parent;
         }
         // 删除的元素是唯一的一个根节点
         else if (node.parent == null) {
             root = null;
+            afterRemove(node);
         }
         // 叶子节点
         else {
@@ -212,6 +416,7 @@ public class AVLTree2<E> {
             } else {
                 node.parent.left = null;
             }
+            afterRemove(node);
             node.parent = null;
         }
     }
