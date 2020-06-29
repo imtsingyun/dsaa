@@ -1,11 +1,16 @@
 package io.whaley.lession008_RedBlackTree;
 
+import io.whaley.lession007_AVL树.AVLTree2;
+
 import java.util.Comparator;
 
 public class RedBlackTree<E> {
 
     private static final boolean RED = false;
     private static final boolean BLACK = true;
+
+    private Node<E> root;
+    private int size;
 
     private Comparator<E> comparator;
 
@@ -15,6 +20,40 @@ public class RedBlackTree<E> {
         this.comparator = comparator;
     }
 
+
+    /************************************************************************************************
+     * 添加元素后的处理逻辑 Begin
+     ************************************************************************************************/
+    private void afterAdd(Node<E> node) {
+        Node<E> parent = node.parent;
+        // 添加的是根节点
+        if (parent == null) {
+            black(node);    // 染成黑色
+            return;
+        }
+        // 父节点是黑色的，无需处理
+        if (isBlack(parent)) return;
+        // 叔父节点
+        Node<E> uncle = parent.sibling();
+        // 祖父节点
+        Node<E> grand = parent.parent;
+        // 叔父节点是红色
+        if (isRed(uncle)) {
+            // 把父节点和叔父节点都染成黑色
+            black(parent);
+            black(uncle);
+            // 把祖父节点当成是新添加的节点
+            red(grand);
+            afterAdd(grand);
+            return;
+        }
+
+        // 叔父节点不是红色
+
+    }
+    /* ***********************************************************************************************
+     * 添加元素后的处理逻辑 End
+     * ***********************************************************************************************/
 
     /************************************************************************************************
      * 辅助方法 Begin
