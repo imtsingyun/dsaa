@@ -24,7 +24,7 @@ public class AVLTree3<E> {
         if (root == null) {
             root = createNode(element, null);
             size++;
-            // TODO:
+            afterAdd(root);
             return;
         }
         // 通过遍历查找合适的位置插入元素
@@ -41,6 +41,7 @@ public class AVLTree3<E> {
         while (node != null) {
             // 比较两个元素的大小
             compare = compare(newEle, node.element);
+            targetNode = node;
             if (compare > 0) {
                 node = node.right;
             } else if (compare < 0) {
@@ -50,18 +51,117 @@ public class AVLTree3<E> {
                 return;
             }
         }
+        Node<E> newNode = createNode(newEle, targetNode);
         if (compare > 0) {
-            targetNode.right = createNode(newEle, targetNode);
+            targetNode.right = newNode;
         } else if (compare < 0) {
-            targetNode.left = createNode(newEle, targetNode);
+            targetNode.left = newNode;
         }
         size++;
-        // TODO
+        afterAdd(newNode);
     }
     /* ***********************************************************************************************
      * 添加一个新的元素 END
      * ***********************************************************************************************/
 
+    /************************************************************************************************
+     * 添加元素后处理是否需要进行旋转
+     * 判断逻辑：
+     *      从新曾节点的父节点开始往上层层判断是否失衡
+     * @param node 新添加的元素
+     ************************************************************************************************/
+    private void afterAdd(Node<E> node) {
+        if (node == null) return;
+        Node<E> parent = node.parent;
+        if (parent == null)
+            return;
+        while (parent != null) {
+            if (isBalance(parent)) {
+                // 更新高度
+                updateHeight(parent);
+            } else {
+                reBalance(parent);
+                break;
+            }
+            parent = parent.parent;
+        }
+    }
+
+    private void reBalance(Node<E> grand) {
+        Node<E> parent = grand.tallerChild();
+        Node<E> child = parent.tallerChild();
+
+        if (parent.isLeft()) {
+            if (child.isRight()) {  // LR
+                rotateLeft(parent);
+            }
+            rotateRight(grand);     // LL
+        } else {
+            if (child.isLeft()) {   // RL
+                rotateRight(parent);
+            }
+            rotateLeft(grand);      // RR
+        }
+    }
+
+    private void rotateRight(Node<E> grand) {
+        Node<E> parent = grand.left;
+        Node<E> child = parent.right;
+
+        if (grand.isLeft()) {
+            grand.parent.left = parent;
+        } else if (grand.isRight()) {
+            grand.parent.right = parent;
+        } else {
+            root = parent;
+        }
+        parent.right = grand;
+        grand.left = child;
+
+        parent.parent = grand.parent;
+        grand.parent = parent;
+        if (child != null) {
+            child.parent = grand;
+        }
+        updateHeight(grand);
+        updateHeight(parent);
+    }
+
+    private void rotateLeft(Node<E> grand) {
+        Node<E> parent = grand.right;
+        Node<E> child = parent.left;
+
+        if (grand.isLeft()) {
+            grand.parent.left = parent;
+        } else if (grand.isRight()) {
+            grand.parent.right = parent;
+        } else {
+            root = parent;
+        }
+
+        parent.left = grand;
+        grand.right = child;
+
+        parent.parent = grand.parent;
+        grand.parent = parent;
+        if (child != null) {
+            child.parent = grand;
+        }
+        updateHeight(grand);
+        updateHeight(parent);
+    }
+
+    private void updateHeight(Node<E> node) {
+        node.updateHeight();
+    }
+    /**
+     * 判断节点是否平衡
+     * @param node 被判断的节点
+     * @return boolean
+     */
+    private boolean isBalance(Node<E> node) {
+        return Math.abs(node.balanceFactor()) <= 1;
+    }
     /************************************************************************************************
      * 删除元素
      * @param element 删除的元素
@@ -106,7 +206,6 @@ public class AVLTree3<E> {
             // 删除的是惟一的一个根节点
             if (node.parent == null) {
                 root = null;
-
             }
             // 删除的是叶子节点
             else {
@@ -117,7 +216,6 @@ public class AVLTree3<E> {
                 }
                 node.parent = null;
             }
-
         }
         size--;
     }
@@ -201,7 +299,7 @@ public class AVLTree3<E> {
         Node<E> left;   // 左指针
         Node<E> right;  // 右指针
         Node<E> parent; // 父节点指针
-        int height;     // 树的高度
+        int height = 1;     // 树的高度
 
         /**
          * 添加构造器，初始化节点
@@ -229,10 +327,93 @@ public class AVLTree3<E> {
         public boolean isLeaf() {
             return this.left == null && this.right == null;
         }
+
+        public boolean isRight() {
+            return parent != null && parent.right == this;
+        }
+
+        public boolean isLeft() {
+            return parent != null && parent.left == this;
+        }
+
+        public void updateHeight() {
+            int leftHeight = this.left != null ? this.left.height : 0;
+            int rightHeight = this.right != null ? this.right.height : 0;
+            this.height = 1 + Math.max(leftHeight, rightHeight);
+        }
+
+        public Node<E> tallerChild() {
+            int leftHeight = this.left != null ? this.left.height : 0;
+            int rightHeight = this.right != null ? this.right.height : 0;
+            if (leftHeight > rightHeight) {
+                return this.left;
+            }
+            return right;
+        }
+
+        public int balanceFactor() {
+            int leftHeight = this.left == null ? 0 : this.left.height;
+            int rightHeight = this.right == null ? 0 : this.right.height;
+            return leftHeight - rightHeight;
+        }
     }
     /* ***********************************************************************************************
      * AVL-tree 节点 End
      * ***********************************************************************************************/
 
+    public static void main(String[] args) {
+        AVLTree3<Integer> tree3 = new AVLTree3();
+        tree3.add(1);
+        tree3.add(8);
+        tree3.add(9);
+//        tree3.add(7);
+//        tree3.add(10);
+//        tree3.add(11);
+//        tree3.add(6);
+//        tree3.add(5);
+//        tree3.add(4);
+//
+//        tree3.add(12);
+//        tree3.add(2);
+//        tree3.add(13);
+//
+//        tree3.add(20);
+        System.out.println(tree3);
+    }
 
+
+    /**
+     * 打印二叉树
+     *
+     * @return string
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        toString(root, sb, "", 0);
+
+        return sb.toString();
+    }
+
+    private void toString(Node<E> node, StringBuilder sb, String prefix, int direction) {
+        if (node == null) return;
+        toString(node.right, sb, prefix + "  │", 1);
+        if (direction == 1) {
+            sb.append(prefix).append("┌> ").append(node.element).append("\n");
+            int i = sb.lastIndexOf("┌> ");
+            if (i > 0) {
+                sb.replace(i - 1, i, "");
+            }
+        } else if (direction == -1) {
+            sb.append(prefix).append("└> ").append(node.element).append("\n");
+            int i = sb.lastIndexOf("└> ");
+            if (i > 0) {
+                sb.replace(i - 1, i, "");
+            }
+        } else {
+            sb.append(node.element).append("\n");
+        }
+        toString(node.left, sb, prefix + "  │", -1);
+    }
 }
