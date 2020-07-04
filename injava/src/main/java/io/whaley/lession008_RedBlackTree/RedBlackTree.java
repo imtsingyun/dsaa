@@ -1,7 +1,5 @@
 package io.whaley.lession008_RedBlackTree;
 
-import io.whaley.lession007_AVL树.AVLTree2;
-
 import java.util.Comparator;
 
 public class RedBlackTree<E> {

@@ -201,11 +201,13 @@ public class AVLTree3<E> {
             } else {
                 parent.right = replacement;
             }
+            afterRemove(node);
             replacement.parent = parent;
         } else {
             // 删除的是惟一的一个根节点
             if (node.parent == null) {
                 root = null;
+                afterRemove(node);
             }
             // 删除的是叶子节点
             else {
@@ -214,6 +216,7 @@ public class AVLTree3<E> {
                 } else {
                     node.parent.right = null;
                 }
+                afterRemove(node);
                 node.parent = null;
             }
         }
@@ -223,6 +226,22 @@ public class AVLTree3<E> {
      * 删除元素 END
      * ***********************************************************************************************/
 
+    /**
+     * 删除节点后的处理
+     * @param node 被删除的节点的父节点
+     */
+    private void afterRemove(Node<E> node) {
+        if (node == null) return;
+        Node<E> parent = node.parent;
+        while (parent != null) {
+            if (isBalance(parent)) {
+                updateHeight(parent);
+            } else {
+                reBalance(parent);
+            }
+            parent = parent.parent;
+        }
+    }
     public E predecessor(E element) {
         Node<E> predecessor = predecessor(node(element));
         if (predecessor != null) {
@@ -363,9 +382,14 @@ public class AVLTree3<E> {
 
     public static void main(String[] args) {
         AVLTree3<Integer> tree3 = new AVLTree3();
-        tree3.add(1);
-        tree3.add(8);
-        tree3.add(9);
+        tree3.add(6);
+        tree3.add(3);
+        tree3.add(4);
+        tree3.add(5);
+        tree3.remove(3);
+//        tree3.add(1);
+//        tree3.add(8);
+//        tree3.add(9);
 //        tree3.add(7);
 //        tree3.add(10);
 //        tree3.add(11);
@@ -376,8 +400,16 @@ public class AVLTree3<E> {
 //        tree3.add(12);
 //        tree3.add(2);
 //        tree3.add(13);
-//
+//        tree3.add(15);
+//        tree3.add(18);
+//        tree3.add(17);
+//        tree3.add(16);
+//        tree3.add(19);
 //        tree3.add(20);
+//        tree3.add(14);
+//        tree3.add(21);
+//        tree3.add(22);
+//        tree3.add(23);
         System.out.println(tree3);
     }
 
