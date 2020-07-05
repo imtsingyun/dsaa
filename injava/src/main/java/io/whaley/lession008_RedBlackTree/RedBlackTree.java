@@ -1,5 +1,8 @@
 package io.whaley.lession008_RedBlackTree;
 
+import io.whaley.lession007_AVL树.AVLTree3;
+import org.graalvm.compiler.nodes.AbstractLocalNode;
+
 import java.util.Comparator;
 
 public class RedBlackTree<E> {
@@ -24,18 +27,18 @@ public class RedBlackTree<E> {
      ************************************************************************************************/
     private void afterAdd(Node<E> node) {
         Node<E> parent = node.parent;
-        // 添加的是根节点
+        // 1. 添加的是根节点
         if (parent == null) {
             black(node);    // 染成黑色
             return;
         }
-        // 父节点是黑色的，无需处理
+        // 2. 父节点是黑色的，无需处理
         if (isBlack(parent)) return;
         // 叔父节点
         Node<E> uncle = parent.sibling();
         // 祖父节点
         Node<E> grand = parent.parent;
-        // 叔父节点是红色
+        // 3. 叔父节点是红色
         if (isRed(uncle)) {
             // 把父节点和叔父节点都染成黑色
             black(parent);
@@ -45,10 +48,70 @@ public class RedBlackTree<E> {
             afterAdd(grand);
             return;
         }
-
         // 叔父节点不是红色
-
+        if (parent.isLeftChild()) {
+            red(grand);
+            if (node.isLeftChild()) {
+                black(parent);
+            } else {
+                black(node);
+                rotateLeft(parent);
+            }
+            rotateRight(grand);
+        } else {
+            if (node.isLeftChild()) {
+                black(node);
+                rotateRight(parent);
+            } else {
+                black(parent);
+            }
+            rotateLeft(grand);
+        }
     }
+
+    private void rotateRight(Node<E> grand) {
+        Node<E> parent = grand.left;
+        Node<E> child = parent.right;
+
+        if (grand.isLeft()) {
+            grand.parent.left = parent;
+        } else if (grand.isRight()) {
+            grand.parent.right = parent;
+        } else {
+            root = parent;
+        }
+        parent.right = grand;
+        grand.left = child;
+
+        parent.parent = grand.parent;
+        grand.parent = parent;
+        if (child != null) {
+            child.parent = grand;
+        }
+    }
+
+    private void rotateLeft(Node<E> grand) {
+        Node<E> parent = grand.right;
+        Node<E> child = parent.left;
+
+        if (grand.isLeft()) {
+            grand.parent.left = parent;
+        } else if (grand.isRight()) {
+            grand.parent.right = parent;
+        } else {
+            root = parent;
+        }
+
+        parent.left = grand;
+        grand.right = child;
+
+        parent.parent = grand.parent;
+        grand.parent = parent;
+        if (child != null) {
+            child.parent = grand;
+        }
+    }
+
     /* ***********************************************************************************************
      * 添加元素后的处理逻辑 End
      * ***********************************************************************************************/
@@ -94,7 +157,6 @@ public class RedBlackTree<E> {
         public Node<E> left;
         public Node<E> right;
         public Node<E> parent;
-        public int height =1;
         public boolean color = RED;
 
         public Node(E element, Node<E> parent) {
@@ -127,6 +189,15 @@ public class RedBlackTree<E> {
             }
             return null;
         }
+
+        public boolean isRight() {
+            return parent != null && parent.right == this;
+        }
+
+        public boolean isLeft() {
+            return parent != null && parent.left == this;
+        }
+
         @Override
         public String toString() {
             return "" + element;
