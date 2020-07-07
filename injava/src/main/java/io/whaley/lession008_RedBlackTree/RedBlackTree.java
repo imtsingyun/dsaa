@@ -1,11 +1,19 @@
 package io.whaley.lession008_RedBlackTree;
 
-import io.whaley.lession007_AVL树.AVLTree3;
-import org.graalvm.compiler.nodes.AbstractLocalNode;
-
 import java.util.Comparator;
 
 public class RedBlackTree<E> {
+
+    public static void main(String[] args) {
+        RedBlackTree<Integer> red = new RedBlackTree<>();
+        red.add(10);
+        red.add(12);
+        red.add(14);
+        red.add(4);
+        red.add(3);
+
+        System.out.println(red.toString());
+    }
 
     private static final boolean RED = false;
     private static final boolean BLACK = true;
@@ -15,30 +23,101 @@ public class RedBlackTree<E> {
 
     private Comparator<E> comparator;
 
-    public RedBlackTree() {}
+    public RedBlackTree() {
+    }
 
     public RedBlackTree(Comparator<E> comparator) {
         this.comparator = comparator;
     }
 
+    private Node<E> createNode(E element, Node<E> parent) {
+        return new Node<E>(element, parent);
+    }
+
+    /************************************************************************************************
+     * 添加一个新的元素
+     * @param element 节点的元素
+     ************************************************************************************************/
+    public void add(E element) {
+        // 添加的第一个节点做为根节点
+        if (root == null) {
+            root = createNode(element, null);
+            size++;
+            afterAdd(root);
+            return;
+        }
+        // 通过遍历查找合适的位置插入元素
+        findPosition(element);
+    }
+
+    /**
+     * 查找插入新元素的位置
+     *
+     * @param newEle 新元素
+     */
+    private void findPosition(E newEle) {
+        Node<E> node = root;
+        int compare = 0;                       // 比较结果, >0 表示插入右边，<0 表示插入左边
+        Node<E> targetNode = root;             // 新节点的父节点
+        while (node != null) {
+            // 比较两个元素的大小
+            compare = compare(newEle, node.element);
+            targetNode = node;
+            if (compare > 0) {
+                node = node.right;
+            } else if (compare < 0) {
+                node = node.left;
+            } else {
+                // 两个元素相等，暂不处理
+                return;
+            }
+        }
+        Node<E> newNode = createNode(newEle, targetNode);
+        if (compare > 0) {
+            targetNode.right = newNode;
+        } else if (compare < 0) {
+            targetNode.left = newNode;
+        }
+        size++;
+        afterAdd(newNode);
+    }
+    /* ***********************************************************************************************
+     * 添加一个新的元素 END
+     * ***********************************************************************************************/
+
+    /**
+     * 比较两个元素的大小
+     *
+     * @param e1 first element
+     * @param e2 second element
+     * @return if result > 0 then el > e2, if result < 0 then e1 < e2, else e1 = e2
+     */
+    private int compare(E e1, E e2) {
+        // 使用 JDK 自带的比较器
+        return ((Comparable<E>) e1).compareTo(e2);
+    }
 
     /************************************************************************************************
      * 添加元素后的处理逻辑 Begin
+     * 1. 根节点
+     * 2. 父节点是黑色
+     * 3. 叔父节点是红色
+     * 4. 叔父节点是黑色
      ************************************************************************************************/
     private void afterAdd(Node<E> node) {
         Node<E> parent = node.parent;
-        // 1. 添加的是根节点
+        // 1. 添加的是根节点 ///////////////////////////////////////////////////////////////
         if (parent == null) {
             black(node);    // 染成黑色
             return;
         }
-        // 2. 父节点是黑色的，无需处理
+        // 2. 父节点是黑色的，无需处理 //////////////////////////////////////////////////////
         if (isBlack(parent)) return;
         // 叔父节点
         Node<E> uncle = parent.sibling();
         // 祖父节点
         Node<E> grand = parent.parent;
-        // 3. 叔父节点是红色
+        // 3. 叔父节点是红色 ///////////////////////////////////////////////////////////////
         if (isRed(uncle)) {
             // 把父节点和叔父节点都染成黑色
             black(parent);
@@ -48,7 +127,7 @@ public class RedBlackTree<E> {
             afterAdd(grand);
             return;
         }
-        // 叔父节点不是红色
+        // 叔父节点不是红色 ///////////////////////////////////////////////////////////////
         if (parent.isLeftChild()) {
             red(grand);
             if (node.isLeftChild()) {
@@ -59,6 +138,7 @@ public class RedBlackTree<E> {
             }
             rotateRight(grand);
         } else {
+            red(grand);
             if (node.isLeftChild()) {
                 black(node);
                 rotateRight(parent);
@@ -139,6 +219,9 @@ public class RedBlackTree<E> {
     }
 
     private boolean isRed(Node<E> node) {
+        if (node == null) {
+            return false;
+        }
         return colorOf(node) == RED;
     }
 
@@ -206,4 +289,43 @@ public class RedBlackTree<E> {
     /* ***********************************************************************************************
      * 红黑树节点 End
      *  ***********************************************************************************************/
+
+    /**
+     * 打印二叉树
+     *
+     * @return string
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        toString(root, sb, "", 0);
+
+        return sb.toString();
+    }
+
+    private void toString(Node<E> node, StringBuilder sb, String prefix, int direction) {
+        if (node == null) return;
+        String color = "B";
+        if (node.color == RED) {
+            color = "R";
+        }
+        toString(node.right, sb, prefix + "  │", 1);
+        if (direction == 1) {
+            sb.append(prefix).append("┌> ").append("[").append(color).append("]").append(node.element).append("\n");
+            int i = sb.lastIndexOf("┌> ");
+            if (i > 0) {
+                sb.replace(i - 1, i, "");
+            }
+        } else if (direction == -1) {
+            sb.append(prefix).append("└> ").append("[").append(color).append("]").append(node.element).append("\n");
+            int i = sb.lastIndexOf("└> ");
+            if (i > 0) {
+                sb.replace(i - 1, i, "");
+            }
+        } else {
+            sb.append("[").append(color).append("]").append(node.element).append("\n");
+        }
+        toString(node.left, sb, prefix + "  │", -1);
+    }
 }
