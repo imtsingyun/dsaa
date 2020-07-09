@@ -1,5 +1,7 @@
 package io.whaley.lession008_RedBlackTree;
 
+import io.whaley.lession007_AVL树.AVLTree3;
+
 import java.util.Comparator;
 
 public class RedBlackTree<E> {
@@ -196,6 +198,119 @@ public class RedBlackTree<E> {
      * 添加元素后的处理逻辑 End
      * ***********************************************************************************************/
 
+    public void remove(E element) {
+        remove(node(element));
+    }
+
+    private void remove(Node<E> node) {
+        if (node == null) return;
+        // 度为 2，使用前驱或后继节点替换
+        // 由于前驱或后继节点一定是叶子节点，可以使用前驱或后继节点的元素替换当前节点的元素
+        // 然后删除前驱或后继节节点即可
+        if (node.hasTwoChildren()) {
+            Node<E> predecessor = predecessor(node);
+            node.element = predecessor.element;
+            // predecessor 为前驱节点，node 节点元素已被替换，前驱节点可以被删除
+            // node 指向前驱节点，后面等待被删除
+            node = predecessor;
+        }
+        // 度为 1，则使用其子节点替换
+        Node<E> replacement = node.left != null ? node.left : node.right;
+        if (replacement != null) {
+            Node<E> parent = node.parent;
+            // 删除的节点是根节点
+            if (parent == null) {
+                root = replacement;
+            } else if (parent.left == node) {
+                parent.left = replacement;
+            } else {
+                parent.right = replacement;
+            }
+            afterRemove(node, replacement);
+            replacement.parent = parent;
+        } else {
+            // 删除的是惟一的一个根节点
+            if (node.parent == null) {
+                root = null;
+                afterRemove(node, null);
+            }
+            // 删除的是叶子节点
+            else {
+                if (node == node.parent.left) {
+                    node.parent.left = null;
+                } else {
+                    node.parent.right = null;
+                }
+                afterRemove(node, null);
+                node.parent = null;
+            }
+        }
+        size--;
+    }
+    /**
+     *
+     * @param node 被删除的节点
+     */
+    private void afterRemove(Node<E> node, Node<E> replacement) {
+        // 如果删除的是红色，则直接删除
+        if (isRed(node)) return;
+        // 用于取代 node 节点
+        if (isRed(replacement)) {
+
+        }
+
+    }
+
+    /**
+     * 根据元素的值查找节点
+     * @param element 元素
+     * @return 节点
+     */
+    private Node<E> node(E element) {
+        Node<E> node = root;
+        while (node != null) {
+            int compare = compare(element, node.element);
+            if (compare == 0) {
+                return node;
+            }
+            if (compare > 0) {
+                node = node.right;
+            } else {
+                node = node.left;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 前驱节点：左子树上最大的节点
+     * @param node 查找的节点
+     * @return node 的前驱节点
+     */
+    private Node<E> predecessor(Node<E> node) {
+        if (node == null || node.left == null)
+            return null;
+        node = node.left;
+        while (node.right != null) {
+            node = node.right;
+        }
+        return node;
+    }
+
+    /**
+     * 获取后继节点
+     * @param node 查找的节点
+     * @return 后继节点
+     */
+    private Node<E> successor(Node<E> node) {
+        if (node == null || node.right == null)
+            return null;
+        node = node.right;
+        while (node.left != null) {
+            node = node.left;
+        }
+        return  node;
+    }
     /************************************************************************************************
      * 辅助方法 Begin
      ************************************************************************************************/
