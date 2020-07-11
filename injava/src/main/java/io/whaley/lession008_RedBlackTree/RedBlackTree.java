@@ -267,7 +267,61 @@ public class RedBlackTree<E> {
         // 删除节点的兄弟是红色
         // 判断被删除历节点是左还是右
         boolean left = node.parent.left == null;
-        
+        Node<E> sibling = left ? node.parent.right : node.parent.left;
+
+        if (left) {     // 被删除的节点是左边
+            if (isRed(sibling)) {   // 兄弟节点是红色的
+                black(sibling);
+                red(node.parent);
+                rotateLeft(node.parent);
+                sibling = node.parent.right;
+            }
+            // 兄弟节点是黑色
+            if (isBlack(sibling.left) && isBlack(sibling.right)) {
+                boolean parentBlack = isBlack(node.parent);
+                black(node.parent);
+                red(sibling);
+                if (parentBlack) {
+                    afterRemove(node.parent, null);
+                }
+            } else {    // 兄弟节点至少有1个红色子节点
+                // 左边是黑色，兄弟左转
+                if (isBlack(sibling.right)) {
+                    rotateRight(sibling);
+                    sibling = node.parent.right;
+                }
+                color(sibling, colorOf(node.parent));
+                black(sibling.right);
+                black(node.parent);
+                rotateLeft(node.parent);
+            }
+        } else {        // 被删除的节点是右边
+            if (isRed(sibling)) {   // 兄弟节点是红色的
+                black(sibling);
+                red(node.parent);
+                rotateRight(node.parent);
+                sibling = node.parent.left;
+            }
+            // 兄弟节点是黑色
+            if (isBlack(sibling.left) && isBlack(sibling.right)) {
+                boolean parentBlack = isBlack(node.parent);
+                black(node.parent);
+                red(sibling);
+                if (parentBlack) {
+                    afterRemove(node.parent, null);
+                }
+            } else {    // 兄弟节点至少有1个红色子节点
+                // 左边是黑色，兄弟左转
+                if (isBlack(sibling.left)) {
+                    rotateLeft(sibling);
+                    sibling = node.parent.left;
+                }
+                color(sibling, colorOf(node.parent));
+                black(sibling.left);
+                black(node.parent);
+                rotateRight(node.parent);
+            }
+        }
     }
 
     /**
