@@ -254,11 +254,20 @@ public class RedBlackTree<E> {
     private void afterRemove(Node<E> node, Node<E> replacement) {
         // 如果删除的是红色，则直接删除
         if (isRed(node)) return;
-        // 用于取代 node 节点
+        // 用于取代 node 节点是红色的（ ）
         if (isRed(replacement)) {
-
+            black(replacement);
+            return;
         }
+        // 删除的是黑色的叶子节点
+        // 删除的是根节点
+        if (node.parent == null) return;
+        // 删除节点的兄弟是黑色
 
+        // 删除节点的兄弟是红色
+        // 判断被删除历节点是左还是右
+        boolean left = node.parent.left == null;
+        
     }
 
     /**
