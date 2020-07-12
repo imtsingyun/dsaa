@@ -17,9 +17,7 @@ public class BinaryTree<E> {
         return size;
     }
 
-    public boolean isEmpty() {
-        return size == 0;
-    }
+    d
 
     public void clear() {
         root = null;

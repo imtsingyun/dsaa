@@ -3,6 +3,8 @@ package io.whaley.lession008_RedBlackTree;
 import io.whaley.lession007_AVL树.AVLTree3;
 
 import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class RedBlackTree<E> {
 
@@ -26,6 +28,23 @@ public class RedBlackTree<E> {
     private Comparator<E> comparator;
 
     public RedBlackTree() {
+    }
+
+    public int size() {
+        return size;
+    }
+
+    public void clear() {
+        root = null;
+        size = 0;
+    }
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    public boolean contains(E element) {
+        Node<E> node = node(element);
+        return node != null;
     }
 
     public RedBlackTree(Comparator<E> comparator) {
@@ -406,6 +425,88 @@ public class RedBlackTree<E> {
     private boolean colorOf(Node<E> node) {
         return node == null ? BLACK : node.color;
     }
+
+
+
+    public void preorderTraversal() {
+        preorderTraversal(root);
+    }
+
+    /**
+     * 前序遍历： 根 _ 左 _ 右
+     * @param root 根节点
+     */
+    private void preorderTraversal(Node<E> root) {
+        if (root == null) {
+            return;
+        }
+        System.out.println(root.element);
+        preorderTraversal(root.left);
+        preorderTraversal(root.right);
+    }
+
+    public void inorderTraversal() {
+        inorderTraversal(root);
+    }
+
+    /**
+     * 中序遍历： 左 _ 根 _ 右
+     * @param root 根节点
+     */
+    private void inorderTraversal(Node<E> root) {
+        if (root == null) {
+            return;
+        }
+        inorderTraversal(root.left);
+        System.out.println(root.element);
+        inorderTraversal(root.right);
+    }
+
+    public void postorderTraversal() {
+        postorderTraversal(root);
+    }
+
+    /**
+     * 后序遍历： 左 _ 右 _ 根
+     * @param root 根节点
+     */
+    private void postorderTraversal(Node<E> root) {
+        if (root == null) {
+            return;
+        }
+        postorderTraversal(root.left);
+        postorderTraversal(root.right);
+        System.out.println(root.element);
+    }
+
+    public void levelOrderTraversal() {
+        levelOrderTraversal(root);
+    }
+
+    /**
+     * 层序遍历
+     * @param root 根节点
+     */
+    private void levelOrderTraversal(Node<E> root) {
+        if (root == null) {
+            return;
+        }
+        Queue<Node<E>> queue = new LinkedList<>();
+        queue.offer(root);
+
+        while (!queue.isEmpty()) {
+            Node<E> node = queue.poll();
+            System.out.println(node.element);
+            if (node.left != null) {
+                queue.offer(node.left);
+            }
+
+            if (node.right != null) {
+                queue.offer(node.right);
+            }
+        }
+    }
+
     /* ***********************************************************************************************
      * 辅助方法 End
      * ***********************************************************************************************/
