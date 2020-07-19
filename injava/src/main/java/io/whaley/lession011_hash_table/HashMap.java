@@ -1,12 +1,8 @@
 package io.whaley.lession011_hash_table;
 
-import io.whaley.lession008_RedBlackTree;
-import io.whaley.lession008_RedBlackTree;
 import io.whaley.lession010_map.Map;
 
-import java.util.LinkedList;
 import java.util.Objects;
-import java.util.Queue;
 
 public class HashMap<K, V> implements Map<K, V> {
 
@@ -86,6 +82,7 @@ public class HashMap<K, V> implements Map<K, V> {
             parent.left = newNode;
         }
         size++;
+        afterPut(newNode);
         return null;
     }
 
@@ -113,9 +110,7 @@ public class HashMap<K, V> implements Map<K, V> {
                 return ((Comparable) k1).compareTo(k2);
             }
         }
-
-
-        return ((Comparable<K>) k1).compareTo(k2);
+        return System.identityHashCode(k1) - System.identityHashCode(k2);
     }
 
     /**
@@ -182,7 +177,7 @@ public class HashMap<K, V> implements Map<K, V> {
         } else if (grand.isRight()) {
             grand.parent.right = parent;
         } else {
-            root = parent;
+            table[index(grand.key)] = parent;
         }
         parent.right = grand;
         grand.left = child;
@@ -203,7 +198,7 @@ public class HashMap<K, V> implements Map<K, V> {
         } else if (grand.isRight()) {
             grand.parent.right = parent;
         } else {
-            root = parent;
+            table[index(grand.key)] = parent;
         }
 
         parent.left = grand;
@@ -220,6 +215,16 @@ public class HashMap<K, V> implements Map<K, V> {
         if (key == null) return 0;
         // 获取 hashCode
         int hash = hash(key);
+        // table.length 需要是 2的n次方，所以 (table.length-1) 的二进制全是 1
+        // 2^1 - 1 = 1
+        // 2^2 - 1 = 11
+        // 2^3 - 1 = 111
+        // 2^4 - 1 = 1111
+        // 和 hash 进行 与运算
+        // hash：         1011001110110
+        // &（数组长度-1）  0000000001111
+        //                0000000000110
+        // 计算的结果肯定小于数组长度
         return hash & (table.length - 1);
     }
 
@@ -234,7 +239,23 @@ public class HashMap<K, V> implements Map<K, V> {
     }
 
     @Override
-    public Object get(Object key) {
+    public V get(K key) {
+        Node<K, V> node = node(key);
+        return node == null ? null : node.value;
+    }
+
+    private Node<K, V> node(K key) {
+        Node<K, V> node = table[index(key)];
+        int h1 = key == null ? 0 : key.hashCode();
+        while (node != null) {
+            int compare = compare(key, node.key, h1, node.hash);
+            if (compare == 0) return node;
+            if (compare > 0) {
+                node = node.right;
+            } else {
+                node = node.left;
+            }
+        }
         return null;
     }
 
@@ -244,12 +265,12 @@ public class HashMap<K, V> implements Map<K, V> {
     }
 
     @Override
-    public boolean containsKey(Object key) {
-        return false;
+    public boolean containsKey(K key) {
+        return node(key) != null;
     }
 
     @Override
-    public boolean containsValue(Object value) {
+    public boolean containsValue(V value) {
         return false;
     }
 
@@ -353,90 +374,6 @@ public class HashMap<K, V> implements Map<K, V> {
     private boolean colorOf(Node<K, V> node) {
         return node == null ? BLACK : node.color;
     }
-
-    public void preorderTraversal() {
-        preorderTraversal(root);
-    }
-
-    /**
-     * 前序遍历： 根 _ 左 _ 右
-     *
-     * @param root 根节点
-     */
-    private void preorderTraversal(Node<K, V> root) {
-        if (root == null) {
-            return;
-        }
-        System.out.println(root.element);
-        preorderTraversal(root.left);
-        preorderTraversal(root.right);
-    }
-
-    public void inorderTraversal() {
-        inorderTraversal(root);
-    }
-
-    /**
-     * 中序遍历： 左 _ 根 _ 右
-     *
-     * @param root 根节点
-     */
-    private void inorderTraversal(Node<K, V> root) {
-        if (root == null) {
-            return;
-        }
-        inorderTraversal(root.left);
-        System.out.println(root.element);
-        inorderTraversal(root.right);
-    }
-
-    public void postorderTraversal() {
-        postorderTraversal(root);
-    }
-
-    /**
-     * 后序遍历： 左 _ 右 _ 根
-     *
-     * @param root 根节点
-     */
-    private void postorderTraversal(Node<K, V> root) {
-        if (root == null) {
-            return;
-        }
-        postorderTraversal(root.left);
-        postorderTraversal(root.right);
-        System.out.println(root.element);
-    }
-
-    public void levelOrderTraversal() {
-        levelOrderTraversal(root);
-    }
-
-    /**
-     * 层序遍历
-     *
-     * @param root 根节点
-     */
-    private void levelOrderTraversal(Node<K, V> root) {
-        if (root == null) {
-            return;
-        }
-        Queue<Node<K, V>> queue = new LinkedList<>();
-        queue.offer(root);
-
-        while (!queue.isEmpty()) {
-            Node<K, V> node = queue.poll();
-            System.out.println(node.element);
-            if (node.left != null) {
-                queue.offer(node.left);
-            }
-
-            if (node.right != null) {
-                queue.offer(node.right);
-            }
-        }
-    }
-
     /* ***********************************************************************************************
      * 辅助方法 End
      * ***********************************************************************************************/
