@@ -260,8 +260,67 @@ public class HashMap<K, V> implements Map<K, V> {
     }
 
     @Override
-    public Object remove(Object key) {
-        return null;
+    public V remove(K key) {
+        return remove(node(key));
+    }
+
+    public V remove(Node<K, V> node) {
+        if (node == null) return null;
+        size--;
+        V value = node.value;
+        // 度为 2，使用前驱或后继节点替换
+        if (node.hasTwoChildren()) {
+            Node<K, V> predecessor = predecessor(node);
+            node.value = predecessor.value;
+            node = predecessor;
+        }
+        // 度为 1
+        Node<K, V> replacement = node.left != null ? node.left : node.right;
+        if (replacement != null) {
+            Node<K, V> parent = node.parent;
+            // node 为根节点
+            if (parent == null) {
+
+            }
+        }
+
+        return value;
+    }
+
+    // 获取前驱节点
+    private Node<K, V> predecessor(Node<K, V> node) {
+        if (node == null) return null;
+        Node<K, V> left = node.left;
+
+        if (left != null) {
+            while (left.right!=null) {
+                left = left.right;
+            }
+            return left;
+        }
+
+        while (node.parent != null && node == node.parent.left) {
+            node = node.parent;
+        }
+
+        return node.parent;
+    }
+
+    private Node<K, V> successor(Node<K, V> node) {
+        if (node == null) return null;
+        Node<K, V> right = node.right;
+        if (right != null) {
+            while (right.left != null) {
+                right = right.left;
+            }
+            return right;
+        }
+
+        while (node.parent != null && node == node.parent.right) {
+            node = node.parent;
+        }
+
+        return node.parent;
     }
 
     @Override
@@ -378,4 +437,14 @@ public class HashMap<K, V> implements Map<K, V> {
      * 辅助方法 End
      * ***********************************************************************************************/
 
+    public static void main(String[] args) {
+        HashMap<String, Integer> hashMap = new HashMap<>();
+        hashMap.put("tom", 100);
+        hashMap.put("jack", 80);
+        hashMap.put(null, 50);
+
+        System.out.println(hashMap.get("tom"));
+        System.out.println(hashMap.get("jack"));
+        System.out.println(hashMap.get(null));
+    }
 }
