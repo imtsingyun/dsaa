@@ -1,5 +1,6 @@
 package io.whaley.lession011_hash_table;
 
+import io.whaley.lession008_RedBlackTree.RedBlackTree;
 import io.whaley.lession010_map.Map;
 
 import java.util.Objects;
@@ -274,17 +275,102 @@ public class HashMap<K, V> implements Map<K, V> {
             node.value = predecessor.value;
             node = predecessor;
         }
-        // 度为 1
-        Node<K, V> replacement = node.left != null ? node.left : node.right;
-        if (replacement != null) {
-            Node<K, V> parent = node.parent;
-            // node 为根节点
-            if (parent == null) {
 
+        Node<K, V> replacement = node.left != null ? node.left : node.right;
+        // 度为 1, 用左子节点或右子节点有值替换，最终删除的是子节点
+        if (replacement != null) {
+            node.value = replacement.value;
+            node = replacement;
+        }
+        // 度为 0
+        // 删除的是惟一的一个根节点
+        if (node.parent == null) {
+            table[index(node.key)] = null;
+            afterRemove(node);
+        }
+        // 删除的是叶子节点
+        else {
+            if (node == node.parent.left) {
+                node.parent.left = null;
+            } else {
+                node.parent.right = null;
+            }
+            afterRemove(node);
+            node.parent = null;
+        }
+        return value;
+    }
+
+    /**
+     * 删除后维护红黑树的特性
+     * @param node 被删除的节点
+     */
+    private void afterRemove(Node<K, V> node) {
+        // 1. 如果 node 是红色的, 直接删除
+        if (isRed(node)) {
+           return;
+        }
+        // 2. 删除的是黑色的叶子节点
+        // 删除的是根节点
+        if (node.parent == null) return;
+
+        // 判断被删除历节点是左还是右
+        boolean left = node.parent.left == null;
+        Node<K, V> sibling = left ? node.parent.right : node.parent.left;
+
+        if (left) {     // 被删除的节点是左边
+            if (isRed(sibling)) {   // 兄弟节点是红色的
+                black(sibling);
+                red(node.parent);
+                rotateLeft(node.parent);
+                sibling = node.parent.right;
+            }
+            // 兄弟节点是黑色
+            if (isBlack(sibling.left) && isBlack(sibling.right)) {
+                boolean parentBlack = isBlack(node.parent);
+                black(node.parent);
+                red(sibling);
+                if (parentBlack) {
+                    afterRemove(node.parent);
+                }
+            } else {    // 兄弟节点至少有1个红色子节点
+                // 左边是黑色，兄弟左转
+                if (isBlack(sibling.right)) {
+                    rotateRight(sibling);
+                    sibling = node.parent.right;
+                }
+                color(sibling, colorOf(node.parent));
+                black(sibling.right);
+                black(node.parent);
+                rotateLeft(node.parent);
+            }
+        } else {
+            if (isRed(sibling)) {   // 兄弟节点是红色的
+                black(sibling);
+                red(node.parent);
+                rotateRight(node.parent);
+                sibling = node.parent.left;
+            }
+            // 兄弟节点是黑色
+            if (isBlack(sibling.left) && isBlack(sibling.right)) {
+                boolean parentBlack = isBlack(node.parent);
+                black(node.parent);
+                red(sibling);
+                if (parentBlack) {
+                    afterRemove(node.parent);
+                }
+            } else {    // 兄弟节点至少有1个红色子节点
+                // 左边是黑色，兄弟左转
+                if (isBlack(sibling.left)) {
+                    rotateLeft(sibling);
+                    sibling = node.parent.left;
+                }
+                color(sibling, colorOf(node.parent));
+                black(sibling.left);
+                black(node.parent);
+                rotateRight(node.parent);
             }
         }
-
-        return value;
     }
 
     // 获取前驱节点

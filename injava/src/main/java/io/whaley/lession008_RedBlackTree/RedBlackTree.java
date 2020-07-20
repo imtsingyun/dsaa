@@ -15,7 +15,20 @@ public class RedBlackTree<E> {
         red.add(14);
         red.add(4);
         red.add(3);
+        red.add(13);
+        red.add(5);
+        red.add(20);
+        red.add(11);
+        red.add(2);
 
+//        System.out.println(red.toString());
+
+        red.remove(2);
+        red.remove(3);
+        red.remove(4);
+        red.remove(14);
+        red.remove(20);
+        red.remove(10);
         System.out.println(red.toString());
     }
 
@@ -236,33 +249,23 @@ public class RedBlackTree<E> {
         // 度为 1，则使用其子节点替换
         Node<E> replacement = node.left != null ? node.left : node.right;
         if (replacement != null) {
-            Node<E> parent = node.parent;
-            // 删除的节点是根节点
-            if (parent == null) {
-                root = replacement;
-            } else if (parent.left == node) {
-                parent.left = replacement;
+            node.element = replacement.element;
+            node = replacement;
+        }
+        // 删除的是惟一的一个根节点
+        if (node.parent == null) {
+            root = null;
+            afterRemove(node, null);
+        }
+        // 删除的是叶子节点
+        else {
+            if (node == node.parent.left) {
+                node.parent.left = null;
             } else {
-                parent.right = replacement;
+                node.parent.right = null;
             }
-            afterRemove(node, replacement);
-            replacement.parent = parent;
-        } else {
-            // 删除的是惟一的一个根节点
-            if (node.parent == null) {
-                root = null;
-                afterRemove(node, null);
-            }
-            // 删除的是叶子节点
-            else {
-                if (node == node.parent.left) {
-                    node.parent.left = null;
-                } else {
-                    node.parent.right = null;
-                }
-                afterRemove(node, null);
-                node.parent = null;
-            }
+            afterRemove(node, null);
+            node.parent = null;
         }
         size--;
     }
@@ -281,9 +284,7 @@ public class RedBlackTree<E> {
         // 删除的是黑色的叶子节点
         // 删除的是根节点
         if (node.parent == null) return;
-        // 删除节点的兄弟是黑色
 
-        // 删除节点的兄弟是红色
         // 判断被删除历节点是左还是右
         boolean left = node.parent.left == null;
         Node<E> sibling = left ? node.parent.right : node.parent.left;
@@ -585,25 +586,25 @@ public class RedBlackTree<E> {
 
     private void toString(Node<E> node, StringBuilder sb, String prefix, int direction) {
         if (node == null) return;
-        String color = "B";
+        String color = "\uD83C\uDD51";
         if (node.color == RED) {
-            color = "R";
+            color = "Ⓡ";
         }
         toString(node.right, sb, prefix + "  │", 1);
         if (direction == 1) {
-            sb.append(prefix).append("┌> ").append("[").append(color).append("]").append(node.element).append("\n");
-            int i = sb.lastIndexOf("┌> ");
+            sb.append(prefix).append("┌-> ").append(color).append(node.element).append("\n");
+            int i = sb.lastIndexOf("┌-> ");
             if (i > 0) {
                 sb.replace(i - 1, i, "");
             }
         } else if (direction == -1) {
-            sb.append(prefix).append("└> ").append("[").append(color).append("]").append(node.element).append("\n");
-            int i = sb.lastIndexOf("└> ");
+            sb.append(prefix).append("└-> ").append(color).append(node.element).append("\n");
+            int i = sb.lastIndexOf("└-> ");
             if (i > 0) {
                 sb.replace(i - 1, i, "");
             }
         } else {
-            sb.append("[").append(color).append("]").append(node.element).append("\n");
+            sb.append(color).append(node.element).append("\n");
         }
         toString(node.left, sb, prefix + "  │", -1);
     }
