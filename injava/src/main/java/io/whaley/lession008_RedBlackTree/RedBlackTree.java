@@ -1,6 +1,5 @@
 package io.whaley.lession008_RedBlackTree;
 
-import io.whaley.lession007_AVL树.AVLTree3;
 
 import java.util.Comparator;
 import java.util.LinkedList;

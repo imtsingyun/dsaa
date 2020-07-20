@@ -1,9 +1,10 @@
 package io.whaley.lession011_hash_table;
 
-import io.whaley.lession008_RedBlackTree.RedBlackTree;
 import io.whaley.lession010_map.Map;
 
+import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Queue;
 
 public class HashMap<K, V> implements Map<K, V> {
 
@@ -416,6 +417,24 @@ public class HashMap<K, V> implements Map<K, V> {
 
     @Override
     public boolean containsValue(V value) {
+        if (size == 0) return false;
+
+        Queue<Node<K, V>> queue = new LinkedList<>();
+        for (int i = 0; i < table.length; i++) {
+            if (table[i] == null) continue;
+            queue.offer(table[i]);
+            while (!queue.isEmpty()) {
+                Node<K, V> node = queue.poll();
+                if (Objects.equals(value, node.value)) return true;
+
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+            }
+        }
         return false;
     }
 
