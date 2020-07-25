@@ -6,8 +6,8 @@ public class Main {
         heap.add(68);
         heap.add(72);
         heap.add(43);
-        heap.add(38);
         heap.add(50);
+        heap.add(38);
 
         heap.printAsTree();
     }

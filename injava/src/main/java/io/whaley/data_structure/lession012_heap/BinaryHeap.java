@@ -61,13 +61,11 @@ public class BinaryHeap<E> implements Heap<E> {
             int pIndex = (index - 1) >> 2;
             E p = elements[pIndex];
             if (compare(e, p) <= 0) return;
-
             // 交换
-            E temp = elements[index];
-            elements[index] = elements[pIndex];
-            elements[pIndex] = temp;
+            elements[index] = p;
             index = pIndex;
         }
+        elements[index] = e;
     }
 
     private void ensureCapacity() {
