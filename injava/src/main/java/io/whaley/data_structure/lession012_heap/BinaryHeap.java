@@ -119,7 +119,10 @@ public class BinaryHeap<E> implements Heap<E> {
         int spaceNum = (int) (Math.pow(2, lines) - 1);
         for (int i = 0; i < size; ) { //因为在[1...size]左闭右闭区间存数据，data[0]不存数据
             //每层都是打印这个区间[2^(层数-1) ... (2^层数)-1]。如果堆里的数不够(2^层数)-1个，那就打印到size。所以取min((2^层数)-1,size).
-            for (int j = (int) Math.pow(2, lineNum - 1); j <= Math.min(size, (int) Math.pow(2, lineNum) - 1); j++) {
+            for (int j = (int) Math.pow(2, lineNum - 1) -1;
+                 j < Math.min(size, (int) Math.pow(2, lineNum) - 1);
+                 j++) {
+
                 printSpace(spaceNum); //打印spaceNum个空格
                 System.out.printf("%3s", elements[j]);//打印数据
                 System.out.printf("%3s", "");//图片中绿色方框
