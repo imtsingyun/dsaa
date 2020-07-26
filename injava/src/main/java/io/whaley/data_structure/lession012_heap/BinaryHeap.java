@@ -139,4 +139,21 @@ public class BinaryHeap<E> implements Heap<E> {
         }
     }
 
+    public Integer root() {
+        return 0;
+    }
+
+    public Integer right(Integer index) {
+        index = (index << 1) + 2;
+        return index >= size ? null : index;
+    }
+
+    public Integer left(Integer index) {
+        index = (index << 1) + 1;
+        return index >= size ? null : index;
+    }
+
+    public E string(Integer index) {
+        return elements[index];
+    }
 }
