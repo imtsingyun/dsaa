@@ -10,7 +10,7 @@ import java.util.Comparator;
 public class BinaryHeap<E> implements Heap<E> {
     // 二叉堆使用数组存储
     private E[] elements;
-    // 元素数量
+    // 元素数量]]]]]
     private int size;
 
     private static final int DEFAULT_CAPACITY = 10;
